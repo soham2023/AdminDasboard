@@ -98,8 +98,13 @@ const signIn = async (req, res) => {
   try {
     const userRole = role || 'user';
     const model = getModelByRole(userRole);
-    const user = await model.login(email, password);
-
+    const user = await model.findOne({email});
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid email or password',
+        });
+      }
     const token = user.generateJWT();
 
     res.cookie('token', token, { httpOnly: true });
@@ -141,7 +146,7 @@ const forgotPassword = async (req, res) => {
     });
   }
 
-  try {
+  try { 
     const userRole = role || "user";
     const model = getModelByRole(userRole);
     const user = await model.findOne({ email });

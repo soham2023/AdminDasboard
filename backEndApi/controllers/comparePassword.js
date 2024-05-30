@@ -8,3 +8,4 @@ bcrypt.compare(testPassword, knownGoodHash, (err, result) => {
     if (err) throw err;
     console.log('Password Match:', result); // Should be true if the password and hash match
 });
+ 

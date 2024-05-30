@@ -131,31 +131,27 @@ const signIn = async (req, res) => {
         // Different secret key for admin
         const secretKey = userRole === 'admin' ? process.env.ADMIN_SECRET_KEY : process.env.SECRET_KEY;
 
-        const token = jwt.sign(tokenPayload, secretKey, { expiresIn: '1d' });
-        console.log(token);
-        user.password = undefined;
+        const token = user.generateJWT();
 
-        const cookieOption = {
-            maxAge: 24 * 60 * 60 * 1000, // 1 day
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', // Secure flag in production
-            sameSite: 'Strict', // Prevent CSRF attacks
-        };
-
-        res.cookie('token', token, cookieOption);
-        return res.status(200).json({
-            success: true,
-            data: { user, role: user.role },
-        });
-    } catch (error) {
-        console.error('Error during sign-in:', error);
-        return res.status(500).json({
-            success: false,
-            message: 'Internal server error',
-        });
-    }
+    res.cookie('token', token, { httpOnly: true });
+    return res.status(200).json({
+      success: true,
+      message: 'Successfully signed in',
+      token,
+      user: {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error('Error during sign in:', error);
+    return res.status(400).json({
+      success: false,
+      message: 'Invalid email or password',
+    });
+  }
 };
-
 /*------------------------------------------------- Forgot Password --------------------------------------------------*/
 
 const forgotPassword = async (req, res) => {

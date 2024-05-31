@@ -18,14 +18,15 @@ app.use(cookieParser());
 app.use(morgan('dev'));
 app.use(helmet());
 app.use(cors());
+
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
 // Express session
 app.use(session({ secret: process.env.SECRET_KEY, resave: false, saveUninitialized: true }));
 
 // Passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
+/*app.use(passport.initialize());
+app.use(passport.session()); */
 
 // Connect to MongoDB
 connectToDatabase();

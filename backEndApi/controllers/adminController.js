@@ -18,6 +18,18 @@ const getModelByRole = (role) => {
     return role === 'admin' ? adminModel : userModel;
 };
 
+// Helper function to generate token`
+const comparePasswords = async (plainPassword, hashedPassword) => {
+    try {
+        // Use bcrypt to compare passwords
+        const isMatch = await bcrypt.compare(plainPassword, hashedPassword);
+        return isMatch;
+    } catch (error) {
+        console.error('Error comparing passwords:', error);
+        return false; // Return false in case of error or mismatch
+    }
+};
+
 /*------------------------------------------------- SignUp --------------------------------------------------*/
 const signUp = async (req, res) => {
     const { email, password, confirmPassword, role } = req.body;
@@ -75,16 +87,7 @@ const signUp = async (req, res) => {
     }
 };
 /*------------------------------------------------- SignIn --------------------------------------------------*/
-const comparePasswords = async (plainPassword, hashedPassword) => {
-    try {
-        // Use bcrypt to compare passwords
-        const isMatch = await bcrypt.compare(plainPassword, hashedPassword);
-        return isMatch;
-    } catch (error) {
-        console.error('Error comparing passwords:', error);
-        return false; // Return false in case of error or mismatch
-    }
-};
+
 const signIn = async (req, res) => {
     const { email, password, role } = req.body;
     console.log(email, password);
@@ -134,10 +137,10 @@ const signIn = async (req, res) => {
             });
         }
 
-        /*const tokenPayload = {
+        const tokenPayload = {
             id: user._id,
             role: user.role,
-        };*/
+        };
 
         // Different secret key for admin
         /*const secretKey = userRole === 'admin' ? process.env.ADMIN_SECRET_KEY : process.env.SECRET_KEY;*/

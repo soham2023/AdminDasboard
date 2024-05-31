@@ -19,7 +19,6 @@ const getModelByRole = (role) => {
 };
 
 /*------------------------------------------------- SignUp --------------------------------------------------*/
-
 const signUp = async (req, res) => {
     const { email, password, confirmPassword, role } = req.body;
     console.log(email, password, confirmPassword, role);
@@ -75,7 +74,6 @@ const signUp = async (req, res) => {
         });
     }
 };
-
 /*------------------------------------------------- SignIn --------------------------------------------------*/
 const comparePasswords = async (plainPassword, hashedPassword) => {
     try {

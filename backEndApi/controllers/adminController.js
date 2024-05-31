@@ -2,7 +2,7 @@ const adminModel = require('../models/adminModel.js');
 const userModel = require('../models/userModel.js');
 const emailValidator = require('email-validator');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
@@ -77,6 +77,16 @@ const signUp = async (req, res) => {
 };
 
 /*------------------------------------------------- SignIn --------------------------------------------------*/
+const comparePasswords = async (plainPassword, hashedPassword) => {
+    try {
+        // Use bcrypt to compare passwords
+        const isMatch = await bcrypt.compare(plainPassword, hashedPassword);
+        return isMatch;
+    } catch (error) {
+        console.error('Error comparing passwords:', error);
+        return false; // Return false in case of error or mismatch
+    }
+};
 const signIn = async (req, res) => {
     const { email, password, role } = req.body;
     console.log(email, password);
@@ -115,7 +125,10 @@ const signIn = async (req, res) => {
             });
         }
 
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+        // manually compare passwords inside the if statement
+        const hashedPassword = user.password; // Assuming user.password contains the hashed password
+        const isPasswordValid = comparePasswords(password, hashedPassword);
+
         if (!isPasswordValid) {
             return res.status(400).json({
                 success: false,

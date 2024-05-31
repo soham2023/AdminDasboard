@@ -107,7 +107,7 @@ const signIn = async (req, res) => {
             model = getModelByRole(userRole); // Make sure to define this function in your application
         }
 
-        const user = await model.findOne({ email }).select('+password');
+        const user = await model.findOne({ email });
         if (!user) {
             return res.status(400).json({
                 success: false,
@@ -123,13 +123,13 @@ const signIn = async (req, res) => {
             });
         }
 
-        const tokenPayload = {
+        /*const tokenPayload = {
             id: user._id,
             role: user.role,
-        };
+        };*/
 
         // Different secret key for admin
-        const secretKey = userRole === 'admin' ? process.env.ADMIN_SECRET_KEY : process.env.SECRET_KEY;
+        /*const secretKey = userRole === 'admin' ? process.env.ADMIN_SECRET_KEY : process.env.SECRET_KEY;*/
 
         const token = user.generateJWT();
 
